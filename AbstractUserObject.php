@@ -6,7 +6,7 @@
  * per l'autenticazione.
  *
  * @author Maurizio Cingolani
- * @version 1.0
+ * @version 1.1
  */
 abstract class AbstractUserObject extends AbstractPersonObject {
     /* ID utente */
@@ -22,16 +22,28 @@ abstract class AbstractUserObject extends AbstractPersonObject {
     /** Password */
     public $Password;
 
+    /** Password criptata */
+    public $EncryptedPassword;
+
     /** Abilitato */
     public $Enabled;
 
     /**
      * Verifica se la password coincide con quella dell'utente.
+     * Se il record contiene la password criptata viene usato il meccanismo
+     * di decrittazione, altrimente quello normale.
+     * 
+     * NOTA: per criptare la password con CSecurityManager occorre usare
+     * la funzione base64_encode prima di salvare nel database. Inoltre deve
+     * essere stato impostato il parametro 'encryptionKey' nella configurazione.
      * 
      * @param string $password Password da verificare
      * @return boolean True se la password coincide con quella dell'utente
      */
     public function comparePassword($password) {
+        if ($this->EncryptedPassword) :
+            return $password === Yii::app()->securityManager->decrypt(base64_decode($this->EncryptedPassword), Yii::app()->params['encryptionKey']);
+        endif;
         return CPasswordHelper::verifyPassword($password, $this->Password);
     }
 
