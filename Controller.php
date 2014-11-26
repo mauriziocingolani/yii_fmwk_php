@@ -5,7 +5,7 @@
  * Espone metodi per la gestione dei files css, dei files js e dei breadcrumbs.
  *
  * @author Maurizio Cingolani
- * @version 1.0.10
+ * @version 1.0.11
  */
 class Controller extends CController {
 
@@ -238,9 +238,11 @@ class Controller extends CController {
      * 
      * @param string $text Testo del breadcrumb
      * @param string $url Url del breadcrumb
+     * @return Controller Oggetto per concatenamento
      */
     public function addBreadcrumb($text, $url = null) {
         $this->_breadcrumbs[$text] = $url;
+        return $this;
     }
 
     /**
