@@ -6,7 +6,7 @@
  * per l'autenticazione.
  *
  * @author Maurizio Cingolani
- * @version 1.1
+ * @version 1.1.1
  */
 abstract class AbstractUserObject extends AbstractPersonObject {
     /* ID utente */
@@ -18,6 +18,9 @@ abstract class AbstractUserObject extends AbstractPersonObject {
 
     /** Nome utente */
     public $UserName;
+
+    /** Sesso */
+    public $Gender;
 
     /** Password */
     public $Password;
@@ -45,6 +48,19 @@ abstract class AbstractUserObject extends AbstractPersonObject {
             return $password === Yii::app()->securityManager->decrypt(base64_decode($this->EncryptedPassword), Yii::app()->params['encryptionKey']);
         endif;
         return CPasswordHelper::verifyPassword($password, $this->Password);
+    }
+
+    public function getGenderSuffix() {
+        return $this->isMale() ? 'o' : 'a';
+    }
+
+    /**
+     * Restituisce true se l'utente è di sesso maschile o se la proprietà
+     * {@link Gender} non è impostata.
+     * @return boolean True se l'utente è di sesso maschile
+     */
+    public function isMale() {
+        return $this->Gender === 'M' || !isset($this->Gender);
     }
 
     /**
