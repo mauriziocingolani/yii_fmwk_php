@@ -4,7 +4,7 @@
  * Questo oggetto permette di costruire ad alto livello un array di configurazione per l'applicazione.
  * Tutti i metodi restituiscono l'oggetto corrente per permettere il concatenamento.
  * @author Maurizio Cingolani <mauriziocingolani74@gmail.com>
- * @version 1.0
+ * @version 1.0.1
  */
 class Config extends CComponent {
 
@@ -109,12 +109,26 @@ class Config extends CComponent {
      * Imposta il componente 'db', caricando i parametri dal file indicato. Se il parametro è assente
      * viene utilizzato il valore di default 'db.php'. La posizione del file è determinata dalla proprietà
      * {@link $_subfolder}.
-     * @param type $dbFile None del file con i parametri di connessione al db.
+     * @param type $dbFile Nome del file con i parametri di connessione al db.
      * @return Config Oggetto attuale per concatenamento
      */
     public function addDbComponent($dbFile = null) {
         $this->components = array_merge($this->components, array(
             'db' => require $this->basePath . '/config' . ($this->_subfolder ? '/' . $this->_subfolder : '') . '/' . ($dbFile ? $dbFile : 'db.php'),
+        ));
+        return $this;
+    }
+
+    /**
+     * Imposta il componente 'mail', caricando i parametri dal file indicato. Se il parametro è assente
+     * viene utilizzato il valore di default 'mail.php'. La posizione del file è determinata dalla proprietà
+     * {@link $_subfolder}.
+     * @param string $mailFile Nome del file con i parametri della posta
+     * @return Config Oggetto attuale per concatenamento
+     */
+    public function addMailComponent($mailFile = null) {
+        $this->components = array_merge($this->components, array(
+            'mail' => require $this->basePath . '/config' . ($this->_subfolder ? '/' . $this->_subfolder : '') . '/' . ($mailFile ? $mailFile : 'mail.php'),
         ));
         return $this;
     }
@@ -168,9 +182,18 @@ class Config extends CComponent {
      * </ul>
      * I compnenti possono poi essere rimodificati mediante sovrascrittura con il
      * metodo {@link Config::addComponent()}.
+     * 
+     * Il parametro opzionale permette di sovrascrivere le impostazioni dei componenti standard.
+     * Parametri attualemente impostabili:
+     * <ul>
+     * <li>urlManager.class</li>
+     * </ul>
+     * In futuro il nome dell'opzione dovrà rispecchiare la gerarchia dell'array e impostare automaticamente
+     * il parametro in questione.
+     * @param array $options Lista di parametri da modificare nella configurazione standard
      * @return Config Oggetto attuale per concatenamento
      */
-    public function addStandardComponents() {
+    public function addStandardComponents(array $options = null) {
         $this->components = array_merge($this->components, array(
             'authManager' => array(
                 'class' => 'CPhpAuthManager',
@@ -198,6 +221,32 @@ class Config extends CComponent {
                 'rules' => require $this->basePath . '/config' . ($this->_subfolder ? '/' . $this->_subfolder : '') . '/' . $this->rules,
             ),
         ));
+        // Impostazione opzioni
+        if ($options && is_array($options)) :
+            foreach ($options as $opt => $value) :
+                if ($opt == 'urlManager.class') :
+                    $this->components['urlManager']['class'] = $value;
+                endif;
+//                $split = preg_split('/[\.]/', $opt);
+//                $last = array_pop($split);
+//                $element = $this->components;
+//                foreach ($split as $sp) :
+//                    if (isset($element[$sp])) :
+//                        $element = $element[$sp];
+//                    else :
+//                        $element = null;
+//                        break;
+//                    endif;
+//                endforeach;
+//                if ($element) :
+//                    CVarDumper::dump($element[$last], 10, true);
+//                    $element[$last] = $value;
+//                    CVarDumper::dump($element[$last], 10, true);
+//
+//                endif;
+//                CVarDumper::dump($element, 10, true);
+            endforeach;
+        endif;
         return $this;
     }
 
