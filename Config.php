@@ -4,7 +4,7 @@
  * Questo oggetto permette di costruire ad alto livello un array di configurazione per l'applicazione.
  * Tutti i metodi restituiscono l'oggetto corrente per permettere il concatenamento.
  * @author Maurizio Cingolani <mauriziocingolani74@gmail.com>
- * @version 1.0.1
+ * @version 1.0.2
  */
 class Config extends CComponent {
 
@@ -69,6 +69,7 @@ class Config extends CComponent {
             'language' => null,
             'name' => $this->name,
             'params' => require $this->basePath . '/config' . ($this->_subfolder ? '/' . $this->_subfolder : '') . '/' . $this->params,
+            'preload' => $this->preload,
             'timeZone' => $this->timeZone,
         );
         if (count($this->aliases) > 0)
