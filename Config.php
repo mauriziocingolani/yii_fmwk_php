@@ -4,7 +4,7 @@
  * Questo oggetto permette di costruire ad alto livello un array di configurazione per l'applicazione.
  * Tutti i metodi restituiscono l'oggetto corrente per permettere il concatenamento.
  * @author Maurizio Cingolani <mauriziocingolani74@gmail.com>
- * @version 1.0.2
+ * @version 1.0.3
  */
 class Config extends CComponent {
 
@@ -301,6 +301,26 @@ class Config extends CComponent {
      */
     public function setBasePath($basePath) {
         $this->basePath = $basePath;
+        return $this;
+    }
+
+    /**
+     * Imposta la proprietà {@link $params}.
+     * @param string $paramsFile 
+     * @return Config Oggetto attuale per concatenamento
+     */
+    public function setParams($paramsFile) {
+        $this->params = $paramsFile;
+        return $this;
+    }
+
+    /**
+     * Imposta la proprietà {@link $rules}.
+     * @param string $rulesFile 
+     * @return Config Oggetto attuale per concatenamento
+     */
+    public function setRules($rulesFile) {
+        $this->rules = $rulesFile;
         return $this;
     }
 
