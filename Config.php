@@ -4,7 +4,7 @@
  * Questo oggetto permette di costruire ad alto livello un array di configurazione per l'applicazione.
  * Tutti i metodi restituiscono l'oggetto corrente per permettere il concatenamento.
  * @author Maurizio Cingolani <mauriziocingolani74@gmail.com>
- * @version 1.0.3
+ * @version 1.0.4
  */
 class Config extends CComponent {
 
@@ -22,6 +22,9 @@ class Config extends CComponent {
 
     /** Lista degli import. */
     private $import;
+
+    /** Lista dei moduli */
+    private $modules;
 
     /** Nome dell'applicazione. */
     private $name;
@@ -50,6 +53,7 @@ class Config extends CComponent {
         $this->components = array();
         $this->name = $name;
         $this->import = array();
+        $this->modules = array();
         $this->preload = array('log');
         $this->timeZone = 'Europe/Rome';
         // Files di configurazione
@@ -72,6 +76,8 @@ class Config extends CComponent {
             'preload' => $this->preload,
             'timeZone' => $this->timeZone,
         );
+        if (count($this->modules) > 0)
+            $config['modules'] = $this->modules;
         if (count($this->aliases) > 0)
             $config['aliases'] = $this->aliases;
         return $config;
@@ -131,6 +137,21 @@ class Config extends CComponent {
         $this->components = array_merge($this->components, array(
             'mail' => require $this->basePath . '/config' . ($this->_subfolder ? '/' . $this->_subfolder : '') . '/' . ($mailFile ? $mailFile : 'mail.php'),
         ));
+        return $this;
+    }
+
+    /**
+     * Imposta la proprietà 'modules'. Accetta una stringa oppure un array, a seconda che il modulo
+     * richieda configurazione o meno.
+     * @param mixed $module Stringa con il nome del modulo oppure array di configurazione del modulo
+     * @return Config Oggetto attuale per concatenamento
+     */
+    public function addModule($module) {
+        if (is_array($module)) :
+            $this->modules = array_merge($this->modules, $module);
+        else :
+            $this->modules[] = $module;
+        endif;
         return $this;
     }
 
