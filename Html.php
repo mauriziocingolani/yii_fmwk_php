@@ -4,7 +4,7 @@
  * Estende la classe CHtml con alcuni metodi di utilità.
  *
  * @author Maurizio Cingolani
- * @version 1.0.3
+ * @version 1.0.4
  */
 class Html extends CHtml {
 
@@ -43,6 +43,26 @@ class Html extends CHtml {
             return func_get_arg(0);
 
         return func_get_arg(Yii::app()->session['languageIndex']);
+    }
+
+    /**
+     * Inserisce in fondo alla pagina lo snippet javascript con il codice di monitoraggio GA.
+     * Se non viene passato il codice come parametro viene utilizzato il parametro dell'applicazione
+     * ['googleAnalytics]['account']. Se nemmeno quest'ultimo è impostato viene sollevata una CException.
+     * @param string $account Codice di monitoraggio
+     * @throws CException Se il parametro {@link $account} è nullo e non è impostato il parametro ['googleAnalytics]['account] dell'applicazione.
+     */
+    public static function GoogleAnalytics($account = null) {
+        if ($account == null)
+            $account = Yii::app()->params['googleAnalytics']['account'];
+        if ($account == null)
+            throw new CException('Devi specificare l\'account Analytics (come argomento del metodo Html::GoogleAnalytics o come parametro dell\'applicazione).');
+        Yii::app()->clientScript->registerScript(sha1(time()), "(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){" .
+                "(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o)," .
+                "m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)" .
+                "})(window,document,'script','//www.google-analytics.com/analytics.js','ga');" .
+                "ga('create', '{$account}', 'auto');" .
+                "ga('send', 'pageview');");
     }
 
 }
