@@ -49,6 +49,7 @@ class Html extends CHtml {
      * Inserisce in fondo alla pagina lo snippet javascript con il codice di monitoraggio GA.
      * Se non viene passato il codice come parametro viene utilizzato il parametro dell'applicazione
      * ['googleAnalytics]['account']. Se nemmeno quest'ultimo è impostato viene sollevata una CException.
+     * Prima di registrare lo script viene inibito il caricamento del core jQuery.
      * @param string $account Codice di monitoraggio
      * @throws CException Se il parametro {@link $account} è nullo e non è impostato il parametro ['googleAnalytics]['account] dell'applicazione.
      */
@@ -57,7 +58,13 @@ class Html extends CHtml {
             $account = Yii::app()->params['googleAnalytics']['account'];
         if ($account == null)
             throw new CException('Devi specificare l\'account Analytics (come argomento del metodo Html::GoogleAnalytics o come parametro dell\'applicazione).');
-        Yii::app()->clientScript->registerScript(sha1(time()), "(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){" .
+        $cs = Yii::app()->clientScript;
+        $cs->scriptMap = array(
+            'jquery.js' => false,
+            'jquery.min.js' => false,
+            'jquery.ui.js' => false,
+        );
+        $cs->registerScript(sha1(time()), "(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){" .
                 "(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o)," .
                 "m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)" .
                 "})(window,document,'script','//www.google-analytics.com/analytics.js','ga');" .
