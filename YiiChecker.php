@@ -5,7 +5,7 @@
  * va passato alla view della pagina come lista di parametri.
  *
  * @author Maurizio Cingolani <mauriziocingolani74@gmail.com>
- * @version 1.0
+ * @version 1.0.1
  */
 class YiiChecker extends CComponent {
 
@@ -22,7 +22,7 @@ class YiiChecker extends CComponent {
      * </ul>
      * @return array Lista di parametri
      */
-    public static function Requirements() {
+    public static function Requirements($file) {
         self::$messages = array(
             '$_SERVER does not have {vars}.' => '$_SERVER non contiene {vars}.',
             '$_SERVER variable' => 'variabile $_SERVER',
@@ -233,8 +233,8 @@ class YiiChecker extends CComponent {
         if (!empty($missing))
             return self::T('yii', '$_SERVER does not have {vars}.', array('{vars}' => implode(', ', $missing)));
 
-        if (realpath($_SERVER["SCRIPT_FILENAME"]) !== realpath(__FILE__))
-            return self::T('yii', '$_SERVER["SCRIPT_FILENAME"] must be the same as the entry script file path.');
+//        if (realpath($_SERVER["SCRIPT_FILENAME"]) !== realpath(__FILE__))
+//            return self::T('yii', '$_SERVER["SCRIPT_FILENAME"] must be the same as the entry script file path.');
 
         if (!isset($_SERVER["REQUEST_URI"]) && isset($_SERVER["QUERY_STRING"]))
             return self::T('yii', 'Either $_SERVER["REQUEST_URI"] or $_SERVER["QUERY_STRING"] must exist.');
