@@ -22,7 +22,7 @@ class YiiChecker extends CComponent {
      * </ul>
      * @return array Lista di parametri
      */
-    public static function Requirements($file) {
+    public static function Requirements() {
         self::$messages = array(
             '$_SERVER does not have {vars}.' => '$_SERVER non contiene {vars}.',
             '$_SERVER variable' => 'variabile $_SERVER',
