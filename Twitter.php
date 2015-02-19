@@ -4,7 +4,7 @@
  * Componente per mostrare le ultime modifiche postate su Twitter.
  *
  * @author Maurizio Cingolani <mauriziocingolani74@gmail.com>
- * @version 1.0.1
+ * @version 1.0.2
  */
 class Twitter extends CApplicationComponent {
 
@@ -237,7 +237,7 @@ class Twitter extends CApplicationComponent {
         return $return;
     }
 
-    /** 
+    /**
      * Rimpiazza gli hashtag e i link con gli opportuni elementi HTML.
      * Gli hashtag vengono chiusi in un tag <span>, mentre i link vengono
      * rimpiazzati con un tag <a>.
@@ -245,10 +245,10 @@ class Twitter extends CApplicationComponent {
      * @return string Testo del tweet risistemato
      */
     public static function GetTweetText($tweet) {
-        $text = trim(str_replace('#' . Yii::app()->twitter->hashtag, '<span>#' . Yii::app()->twitter->hashtag . '</span>', $tweet->text));
+        $text = trim(str_replace('#' . Yii::app()->twitter->hashtag, '<span class="hashtag">#' . Yii::app()->twitter->hashtag . '</span>', $tweet->text));
         if (is_array($tweet->entities->urls)) :
             foreach ($tweet->entities->urls as $url) :
-                $text = str_replace($url->url, Html::link($url->display_url, $url->expanded_url, array('target', 'blank')), $text);
+                $text = str_replace($url->url, Html::link($url->display_url, $url->expanded_url, array('target' => 'blank')), $text);
             endforeach;
         endif;
         return $text;
