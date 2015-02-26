@@ -4,9 +4,37 @@
  * Estende la classe CHtml con alcuni metodi di utilità.
  *
  * @author Maurizio Cingolani
- * @version 1.0.4
+ * @version 1.0.5
  */
 class Html extends CHtml {
+
+    /**
+     * Genera un tag select popolandolo con i valori del campo ENUM indicato.
+     * @param CModel $model
+     * @param string $attribute
+     * @param array $htmlOptions
+     * @return mixed Controllo dropDown
+     */
+    public static function enumDropDownList($model, $attribute, $htmlOptions = array()) {
+        return CHtml::activeDropDownList($model, $attribute, self::enumItem($model, $attribute), $htmlOptions);
+    }
+
+    /**
+     * Restituisce un array con i valori del campo ENUM indicato.
+     * @param CActiveRecord $model
+     * @param string $attribute
+     * @return array Lista dei valori del campo
+     */
+    public static function enumItem($model, $attribute) {
+        $attr = $attribute;
+        self::resolveName($model, $attr);
+        preg_match('/\((.*)\)/', $model->tableSchema->columns[$attr]->dbType, $matches);
+        foreach (explode("','", $matches[1]) as $value) {
+            $value = str_replace("'", null, $value);
+            $values[$value] = Yii::t('enumItem', $value);
+        }
+        return $values;
+    }
 
     /**
      * Genera un tag img con l'immagine richiesta. Il percorso dell'immagine
