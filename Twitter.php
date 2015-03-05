@@ -4,7 +4,7 @@
  * Componente per mostrare le ultime modifiche postate su Twitter.
  *
  * @author Maurizio Cingolani <mauriziocingolani74@gmail.com>
- * @version 1.0.2
+ * @version 1.0.3
  */
 class Twitter extends CApplicationComponent {
 
@@ -21,11 +21,13 @@ class Twitter extends CApplicationComponent {
 
     public function getTweets($limit = null) {
         $url = 'https://api.twitter.com/1.1/statuses/user_timeline.json';
-        $getfield = "?screen_name=$this->screenName";
+        $getfield = "?count=3200&screen_name=$this->screenName";
         $requestMethod = 'GET';
         $tweets = json_decode($this->setGetfield($getfield)
                         ->buildOauth($url, $requestMethod)
                         ->performRequest());
+        CVarDumper::dump($tweets, 10, true);
+        CVarDumper::dump(count($tweets), 10, true);
         $tws = array();
         $i = 0;
         if (isset($limit) && (int) $limit > 0) :
