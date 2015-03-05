@@ -26,8 +26,6 @@ class Twitter extends CApplicationComponent {
         $tweets = json_decode($this->setGetfield($getfield)
                         ->buildOauth($url, $requestMethod)
                         ->performRequest());
-        CVarDumper::dump($tweets, 10, true);
-        CVarDumper::dump(count($tweets), 10, true);
         $tws = array();
         $i = 0;
         if (isset($limit) && (int) $limit > 0) :
