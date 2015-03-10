@@ -4,7 +4,7 @@
  * Estende la classe CHtml con alcuni metodi di utilità.
  *
  * @author Maurizio Cingolani
- * @version 1.0.5
+ * @version 1.0.6
  */
 class Html extends CHtml {
 
@@ -98,6 +98,22 @@ class Html extends CHtml {
                 "})(window,document,'script','//www.google-analytics.com/analytics.js','ga');" .
                 "ga('create', '{$account}', 'auto');" .
                 "ga('send', 'pageview');");
+    }
+
+    /**
+     * Construisce una stringa concatenando tra loro le proprietà degli oggetti indicati.
+     * 
+     * @param array $models Array di oggetti CActiveRecord da concatenare
+     * @param string $attribute Proprietà degli oggetti
+     * @param string $glue Stringa di concatenamento
+     * @return string Stringa concatenata
+     */
+    public static function JoinFromModels($models, $attribute, $glue = ', ') {
+        $d = array();
+        foreach ($models as $model) :
+            $d[] = $model->$attribute;
+        endforeach;
+        return join($glue, $d);
     }
 
 }
