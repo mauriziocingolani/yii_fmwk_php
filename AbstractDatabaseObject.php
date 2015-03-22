@@ -5,7 +5,7 @@
  * (tuttavia ancora astratta) dell'interfaccia DatabaseObject.
  *
  * @author Maurizio Cingolani
- * @version 1.0.11
+ * @version 1.0.12
  */
 abstract class AbstractDatabaseObject extends CActiveRecord implements DatabaseObject {
 
@@ -66,6 +66,19 @@ abstract class AbstractDatabaseObject extends CActiveRecord implements DatabaseO
                 ($this->_Updated ? '<br />Ultima modifica : ' . date('d-m-Y', $this->_Updated) . ' alle ore ' . date('H:i', $this->_Updated) .
                         ($this->Updater ? ' da parte di <span style="text-decoration: underline;">' . $this->Updater->UserName . '</span>' : '') : '') .
                 ($showId ? '<br />' . $this->model()->tableSchema->primaryKey . ": $this->primaryKey" : '');
+    }
+
+    /**
+     * Costruisce una stringa a partire dall'array degli errori di validazione.
+     * Per i vari campi viene utilizzata la label definita nel modello.
+     * @return string Lista degli errori di validazione
+     */
+    public function getValidationErrors() {
+        $s = array();
+        foreach ($this->errors as $attribute => $errs) :
+            $s[] = $this->getAttributeLabel($attribute) . ' (' . join(', ', $errs) . ')';
+        endforeach;
+        return join('; ', $s);
     }
 
     /**
