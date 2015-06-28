@@ -4,7 +4,7 @@
  * Questo oggetto permette di costruire ad alto livello un array di configurazione per l'applicazione.
  * Tutti i metodi restituiscono l'oggetto corrente per permettere il concatenamento.
  * @author Maurizio Cingolani <mauriziocingolani74@gmail.com>
- * @version 1.0.4
+ * @version 1.0.5
  */
 class Config extends CComponent {
 
@@ -22,6 +22,9 @@ class Config extends CComponent {
 
     /** Lista degli import. */
     private $import;
+
+    /** Linguaggio predefinito (origine per le traduzioni). */
+    private $sourceLanguage;
 
     /** Lista dei moduli */
     private $modules;
@@ -55,6 +58,7 @@ class Config extends CComponent {
         $this->import = array();
         $this->modules = array();
         $this->preload = array('log');
+        $this->sourceLanguage = 'it';
         $this->timeZone = 'Europe/Rome';
         // Files di configurazione
         $this->params = 'params.php';
@@ -71,6 +75,7 @@ class Config extends CComponent {
             'components' => $this->components,
             'import' => $this->import,
             'language' => null,
+            'sourceLanguage' => $this->sourceLanguage,
             'name' => $this->name,
             'params' => require $this->basePath . '/config' . ($this->_subfolder ? '/' . $this->_subfolder : '') . '/' . $this->params,
             'preload' => $this->preload,
@@ -342,6 +347,16 @@ class Config extends CComponent {
      */
     public function setRules($rulesFile) {
         $this->rules = $rulesFile;
+        return $this;
+    }
+
+    /**
+     * Imposta la proprietà {@link $rules}.
+     * @param string $language 
+     * @return Config Oggetto attuale per concatenamento
+     */
+    public function setSourceLanguage($language) {
+        $this->sourceLanguage = $language;
         return $this;
     }
 
