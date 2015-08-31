@@ -4,7 +4,7 @@
  * Estende la classe CHtml con alcuni metodi di utilità.
  *
  * @author Maurizio Cingolani
- * @version 1.0.6
+ * @version 1.0.7
  */
 class Html extends CHtml {
 
@@ -101,17 +101,20 @@ class Html extends CHtml {
     }
 
     /**
-     * Construisce una stringa concatenando tra loro le proprietà degli oggetti indicati.
+     * Construisce una stringa concatenando tra loro le proprietà degli oggetti indicati. Eventualmente è possibile
+     * specificare un unteriore livello di annidiamento tramite il parametro $subObject, In questo caso viene
+     * concatenato <code>$model->$subObject->$attribute</code>, invece di <code>$model->$attribute</code>.
      * 
      * @param array $models Array di oggetti CActiveRecord da concatenare
      * @param string $attribute Proprietà degli oggetti
      * @param string $glue Stringa di concatenamento
+     * @param string $subObject Eventuale oggetto definito come proprietà del modello principale
      * @return string Stringa concatenata
      */
-    public static function JoinFromModels($models, $attribute, $glue = ', ') {
+    public static function JoinFromModels($models, $attribute, $glue = ', ', $subObject = null) {
         $d = array();
         foreach ($models as $model) :
-            $d[] = $model->$attribute;
+            $d[] = $subObject ? $model->$subObject->$attribute : $model->$attribute;
         endforeach;
         return join($glue, $d);
     }
