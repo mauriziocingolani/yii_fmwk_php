@@ -5,7 +5,7 @@
  * Espone metodi per la gestione dei files css, dei files js e dei breadcrumbs.
  *
  * @author Maurizio Cingolani
- * @version 1.0.11
+ * @version 1.0.12
  */
 class Controller extends CController {
 
@@ -235,13 +235,18 @@ class Controller extends CController {
 
     /**
      * Aggiunge alla variabile $_breadcrumbs un elemento con testo ed eventualmente url specificati.
+     * Compatibile con il widget di sistema zii.widgets.CBreadcrumbs.
      * 
      * @param string $text Testo del breadcrumb
-     * @param string $url Url del breadcrumb
+     * @param string $url Url del breadcrumb (opzionale)
      * @return Controller Oggetto per concatenamento
      */
     public function addBreadcrumb($text, $url = null) {
-        $this->_breadcrumbs[$text] = $url;
+        if ($url) :
+            $this->_breadcrumbs[$text] = $url;
+        else :
+            $this->_breadcrumbs[] = $text;
+        endif;
         return $this;
     }
 
