@@ -21,7 +21,7 @@
  * @property array $headers
  * 
  * @author Maurizio Cingolani
- * @version 1.0
+ * @version 1.0.1
  */
 class ExcelFile extends CComponent implements Iterator {
 
@@ -81,7 +81,8 @@ class ExcelFile extends CComponent implements Iterator {
         for ($column = 0; $column < $this->_maxColumn; $column++) :
             $cell = $this->_sheet->getCellByColumnAndRow($column, $this->_position);
             $prop = $this->_headers[$column];
-            $c->$prop = $cell->getValue();
+            if ($prop != null)
+                $c->$prop = $cell->getValue();
         endfor;
         return $c;
     }
