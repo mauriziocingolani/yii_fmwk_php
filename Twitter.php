@@ -2,9 +2,10 @@
 
 /**
  * Componente per mostrare le ultime modifiche postate su Twitter.
+ * Si appoggia alla tabella 'YiiTweets' del database.
  *
  * @author Maurizio Cingolani <mauriziocingolani74@gmail.com>
- * @version 1.0.3
+ * @version 1.1
  */
 class Twitter extends CApplicationComponent {
 
@@ -27,24 +28,20 @@ class Twitter extends CApplicationComponent {
                         ->buildOauth($url, $requestMethod)
                         ->performRequest());
         $tws = array();
-        $i = 0;
-        if (isset($limit) && (int) $limit > 0) :
-            $limit = (int) $limit;
-        else :
-            $limit = PHP_INT_MAX;
-        endif;
         foreach ($tweets as $tw) :
             foreach ($tw->entities->hashtags as $ht) :
                 if ($ht->text === $this->hashtag) :
-                    $tws[] = $tw;
-                    $i++;
-                    break;
+                    $tweet = TwitterTweet::CreateFromObj($tw);
+                    if ($tweet === true)
+                        break 2;
                 endif;
             endforeach;
-            if ($i == $limit)
-                break;
         endforeach;
-        return $tws;
+        $crit = new CDbCriteria;
+        $crit->order = 'created DESC';
+        if ($limit)
+            $crit->limit = $limit;
+        return TwitterTweet::model()->findAll($crit);
     }
 
     /**
@@ -244,10 +241,10 @@ class Twitter extends CApplicationComponent {
      * @param type $tweet Oggetto del tweet
      * @return string Testo del tweet risistemato
      */
-    public static function GetTweetText($tweet) {
-        $text = trim(str_replace('#' . Yii::app()->twitter->hashtag, '<span class="hashtag">#' . Yii::app()->twitter->hashtag . '</span>', $tweet->text));
-        if (is_array($tweet->entities->urls)) :
-            foreach ($tweet->entities->urls as $url) :
+    public static function GetTweetText($d) {
+        $text = trim(str_replace('#' . Yii::app()->twitter->hashtag, '<span class="hashtag">#' . Yii::app()->twitter->hashtag . '</span>', $d->text));
+        if (isset($d->entities) && is_array($d->entities->urls)) :
+            foreach ($d->entities->urls as $url) :
                 $text = str_replace($url->url, Html::link($url->display_url, $url->expanded_url, array('target' => 'blank')), $text);
             endforeach;
         endif;
