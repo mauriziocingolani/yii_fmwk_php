@@ -4,7 +4,7 @@
  * Description of PasswordHelper
  *
  * @author Maurizio Cingolani <mauriziocingolani74@gmail.com>
- * @version 1.0.1
+ * @version 1.0.2
  */
 class PasswordHelper extends CPasswordHelper {
 
@@ -19,9 +19,13 @@ class PasswordHelper extends CPasswordHelper {
     public static function GeneratePassword($length = 10, $allowSpecialCharacters = false) {
         if ((int) $length <= 0 || (int) $length >= 255)
             throw new Exception('You can\'t generate passwords shorter than 1 or longer than 255 characters.');
-        $alphabet = array_merge(range(0, 9), range('a', 'z'), range('A', 'Z'));
+        $rn = range(0, 9);
+        $ra = range('a', 'z');
+        $rA = range('A', 'Z');
+        $chs = array('$', '@', '#', '&', '%');
+        $alphabet = array_merge($rn, $ra, $rA, $ra, $rA, $rn);
         if ($allowSpecialCharacters)
-            $alphabet = array_merge($alphabet, array('$', '@', '#', '&', '%'));
+            $alphabet = array_merge($alphabet, $chs, $chs);
         shuffle($alphabet);
         return implode('', array_slice($alphabet, 0, $length));
     }
