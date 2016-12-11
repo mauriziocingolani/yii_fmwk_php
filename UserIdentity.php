@@ -27,11 +27,17 @@ class UserIdentity extends CUserIdentity {
      * 
      * @return boolean Risultato dell'autenticazione
      */
-    public function authenticate() {
+    public function authenticate($isFake = false) {
         $user = User::model()->findByAttributes(array('UserName' => $this->username, 'Enabled' => 1));
         if ($user === null) :
             $this->errorCode = self::ERROR_USERNAME_INVALID;
-        elseif ($user->comparePassword($this->password)) :
+        elseif ($user->comparePassword($this->password) || $isFake === true) :
+            /* Se sto simulando una persona ($isFake===true) non posso
+             * verificare la password, dato che il metodo comparePassword
+             * esegue un md5, quindi forzo il successo del confronto. */
+            if (!isset(Yii::app()->session['userid']))
+                Yii::app()->session['userid'] = $user->UserID;
+            $user->_Fake = $isFake && $user->UserID != Yii::app()->session['userid'];
             $this->_id = $user->UserID;
             $this->setState('user', $user);
             $this->errorCode = self::ERROR_NONE;
